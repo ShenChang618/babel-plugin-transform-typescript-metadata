@@ -47,6 +47,30 @@ export function serializeType(
   return serializeTypeNode(className, annotation);
 }
 
+function serializeTypeReferenceMemberExpression(reference: t.Expression) {
+  function createTypeofExpressions(referenceInner: t.Expression) {
+    let createTypeofExpression = (referenceObject: t.Expression) => referenceObject;
+    if (referenceInner.type === 'MemberExpression') {
+      createTypeofExpression = createTypeofExpressions(referenceInner.object);
+    }
+    return (referenceObject: t.Expression) => {
+      return createTypeofExpression(
+        t.conditionalExpression(
+          t.binaryExpression(
+            '===',
+            t.unaryExpression('typeof', referenceInner),
+            t.stringLiteral('undefined')
+          ),
+          t.identifier('Object'),
+          t.cloneDeep(referenceObject)
+        ),
+      );
+    };
+  }
+
+  return createTypeofExpressions(reference)(reference) as t.ConditionalExpression;
+}
+
 function serializeTypeReferenceNode(
   className: string,
   node: t.TSTypeReference
@@ -74,6 +98,10 @@ function serializeTypeReferenceNode(
    * `typeof` operator allows us to use the expression even if it is not
    * defined, fallback is just `Object`.
    */
+  if (reference.type === 'MemberExpression') {
+    return serializeTypeReferenceMemberExpression(reference);
+  }
+  
   return t.conditionalExpression(
     t.binaryExpression(
       '===',

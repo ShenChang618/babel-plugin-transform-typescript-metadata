@@ -1,11 +1,11 @@
 {
-  "name": "babel-plugin-transform-typescript-metadata",
-  "version": "0.3.2",
+  "name": "@loong-js/babel-plugin-transform-typescript-metadata",
+  "version": "0.0.1",
   "description": "Babel plugin to emit decorator metadata like typescript compiler",
   "main": "lib/plugin.js",
   "types": "lib/plugin.d.ts",
-  "repository": "https://github.com/leonardfactory/babel-plugin-transform-typescript-metadata.git",
-  "author": "Leonardo Ascione <leonardo.ascione@gmail.com>",
+  "repository": "https://github.com/ShenChang618/babel-plugin-transform-typescript-metadata.git",
+  "author": "ShenChang",
   "license": "MIT",
   "files": [
     "lib/"
@@ -24,32 +24,13 @@
     "build:lib": "babel src -d lib -x \".ts\"",
     "build:types": "tsc --emitDeclarationOnly",
     "check-types": "tsc --noEmit",
-    "release": "yarn test && yarn build && release-it",
+    "release": "yarn build && release-it",
     "test": "jest --forceExit",
     "test:dev": "jest --watch",
     "test:ci": "jest --ci --runInBand --coverage --forceExit"
   },
-  "husky": {
-    "hooks": {
-      "commit-msg": "emoji-commit-lint"
-    }
-  },
-  "release-it": {
-    "git": {
-      "tagName": "v${version}",
-      "commitMessage": "🔖 v${version}"
-    },
-    "github": {
-      "release": true
-    },
-    "plugins": {
-      "@release-it/conventional-changelog": {
-        "preset": "@favoloso/emoji",
-        "infile": "CHANGELOG.md"
-      }
-    }
-  },
   "publishConfig": {
+    "access": "public",
     "registry": "https://registry.npmjs.org/"
   },
   "devDependencies": {
