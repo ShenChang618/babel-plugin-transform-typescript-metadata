@@ -4,7 +4,7 @@ import { parameterVisitor } from './parameter/parameterVisitor';
 import { metadataVisitor } from './metadata/metadataVisitor';
 
 export default declare(
-  (api: any): PluginObj => {
+  (api: any, options: any): PluginObj => {
     api.assertVersion(7);
 
     return {
@@ -20,6 +20,11 @@ export default declare(
            */
           programPath.traverse({
             ClassDeclaration(path) {
+              try {
+                if (options.includes && options.includes.length > 0 && !programPath.get('body').some(item => item.node.type === 'ImportDeclaration' && options.includes.includes(item.node.source.value))) {
+                  return;
+                }
+              } catch (error) {}
               for (const field of path.get('body').get('body')) {
                 if (
                   field.type !== 'ClassMethod' &&
